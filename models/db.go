@@ -19,5 +19,8 @@ func DB() *gorm.DB {
 	db.DB().SetMaxOpenConns(100)
 	// SetConnMaxLifetiment 设置连接的最大可复用时间。
 	db.DB().SetConnMaxLifetime(time.Hour)
+
+	db.LogMode(true)
+
 	return db
 }

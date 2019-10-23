@@ -1,30 +1,62 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
-type Product struct {
+type User struct {
 	db *gorm.DB
 	gorm.Model
-	Code  string
-	Price uint
+	Username string
+	Password string `json:"-"`
+	Phone    string
+	Name     string
+	Age      uint
 }
 
-func NewProduct() Product {
+func NewUser() User {
 	db := DB()
 	// Migrate the schema
-	db.AutoMigrate(&Product{})
+	db.AutoMigrate(&User{})
 
-	model := Product{db: db}
+	model := User{db: db}
 	return model
 }
 
-func (p Product) GetAll() *gorm.DB {
-	return p.db.Find(&Product{})
+// TODO: 暂不支持过滤条件
+func (m User) Find(page int, pageSize int) ([]User, int) {
+	db := m.db
+	var count int
+	db.Model(&User{}).Count(&count)
+	fmt.Println(count)
+
+	users := make([]User, 0)
+	if page > 0 && pageSize > 0 {
+		db = db.Limit(pageSize).Offset((page - 1) * pageSize)
+	}
+
+	db.Find(&users)
+	return users, count
 }
 
-func (p Product) Create() {
-	p.db.Create(&Product{Code: "L1212", Price: 1000})
+func (m User) Create(u *User) {
+	m.db.Create(u)
+}
+
+func (m User) First(id int) *gorm.DB {
+	return m.db.First(&User{}, id)
+}
+
+// TODO: 目前只支持全量更新
+func (m User) Update(u *User) {
+	m.db.Save(u)
+}
+
+func (m User) Delete(id uint) *gorm.DB {
+	u := &User{}
+	u.ID = id
+	return m.db.Delete(u)
 }
