@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -30,7 +29,6 @@ func (ctrl UserController) Find(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.Query("pageSize"))
 	result, count := ctrl.model.Find(page, pageSize)
 	pages := count / pageSize
-	fmt.Println(pages)
 	if count%pageSize != 0 {
 		pages++
 	}

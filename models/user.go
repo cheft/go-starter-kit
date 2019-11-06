@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
@@ -31,7 +29,6 @@ func (m User) Find(page int, pageSize int) ([]User, int) {
 	db := m.db
 	var count int
 	db.Model(&User{}).Count(&count)
-	fmt.Println(count)
 
 	users := make([]User, 0)
 	if page > 0 && pageSize > 0 {
